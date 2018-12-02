@@ -48,6 +48,7 @@ void SerialNumber::RegionExtraction(Mat& src_img, Mat& edge_img, Mat& dst_img, i
             hist_rows[i] += edge_img.at<uchar>(i,j);
         } 
     }
+    
     //2. 縦幅をregion_rowsと仮定して，輝度値の和を計算する
     vector<int> sum_hist_rows(height - region_rows, 0);
     for(int i = 0; i < height - region_rows; i++){
@@ -113,6 +114,11 @@ void SerialNumber::RegionSegmentation(Mat& src_img, Mat& dst_img, int char_min_s
     threshold(src_img_2, bin_img_2, 0, 255, THRESH_BINARY | THRESH_OTSU);
     hconcat(bin_img_1, bin_img_2, bin_img);
 
+
+    imwrite("src_img_1.png", src_img_1);
+    imwrite("bin_img_1.png", bin_img_1);
+    imwrite("bin_img_2.png", bin_img_2);
+    
     //2.ラベリングでノイズ除去
     Mat label_img, stats, centroids;
     bin_img = ~bin_img;
