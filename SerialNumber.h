@@ -38,4 +38,6 @@ public:
     void RegionSegmentation(cv::Mat& src_img, cv::Mat& dst_img, int char_min_size = 7, int char_max_size = 11);
 };
 
+
+
 #endif

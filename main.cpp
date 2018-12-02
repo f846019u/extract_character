@@ -3,8 +3,8 @@
 #include <vector>
 #include <opencv2/opencv.hpp>
 #include <chrono>
-//#include <sstream>
 #include <glob.h>
+#include <stdlib.h>
 #include "SerialNumber.h"
 
 
@@ -14,19 +14,41 @@ using namespace std::chrono;
 
 int main()
 {
-  
+
+    //path を取る
     string path;
-    vector<string> tmp;
+    vector<string> image_path;
     glob_t globbuf;
     
     int ret = glob("/home/higaki/china_data/original/*.bmp", 0, NULL, &globbuf);
     
     for(int i = 0; i < globbuf.gl_pathc; i++){
-      tmp.push_back(globbuf.gl_pathv[i]);
-      cout << tmp[i] << endl;
+      image_path.push_back(globbuf.gl_pathv[i]);
+      //cout << image_path[i] << endl;
     }
-  
-    SerialNumber serial("0750_SN1_02.5_p.bmp"); //要変更
+    
+    path = image_path[1];
+    cout << "path =  " << path << endl;
+    path = "data/0000_SN1_02.0_p.bmp";
+    
+
+    //shell cmd
+    string cmd_cp;
+    const char* cmd;
+    cmd_cp = "cp " + image_path[0] + " ./data/";
+    cout << cmd_cp << endl;
+    cmd = cmd_cp.c_str();
+    
+    system(cmd);
+    
+    
+    cmd_cp = "rm ./data/*.bmp";
+    cout << cmd_cp << endl;
+    cmd = cmd_cp.c_str();
+
+    system(cmd);
+    
+    SerialNumber serial(path); //要変更
     Mat src_img = serial.GetImage();
     
     //原画像の出力
@@ -78,6 +100,5 @@ int main()
     
     cout << time(&t) << endl;
 
-    
-    
+      
 }   
