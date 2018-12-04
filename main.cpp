@@ -76,15 +76,16 @@ int main()
     vector<string> image_path = get_path();
     vector<string> tmp;
     
-    path = image_path[0];
+   
+    for(int sheet = 0; sheet < image_path.size(); sheet++){
+
+    path = image_path[sheet];
     cout << "path =  " << path << endl;
-    
-//    for(int sheet = 0; sheet < image_path.size(); sheet++)
     
     //shell cmd 0:cp 1:rm
     system_cmd(0, path);
     
-    tmp = split(image_path[0], '/');
+    tmp = split(image_path[sheet], '/');
     src_name = tmp[4];
     cout << "src_name =  " << src_name << endl;
     //path = "0000_SN1_02.0_p.bmp";
@@ -124,24 +125,26 @@ int main()
     //切り出し画像の出力
     imwrite("./Segmentation/seg_" + src_name , segmentation_img);
 
+    }
+
     //シリアルナンバーの推論
  
     //shell cmd 0:cp 1:rm
     system_cmd(1, path);
     
     
-    t4 = system_clock::now();
+    //t4 = system_clock::now();
   
     cout << "測定終了" << endl;
     
     double phase1, phase2, phase3, phase4;
-    phase1 = duration_cast<milliseconds>(t1 - t0).count();
-    phase2 = duration_cast<milliseconds>(t2 - t1).count();
-    phase3 = duration_cast<milliseconds>(t3 - t2).count();
+    //phase1 = duration_cast<milliseconds>(t1 - t0).count();
+    //phase2 = duration_cast<milliseconds>(t2 - t1).count();
+    //phase3 = duration_cast<milliseconds>(t3 - t2).count();
 
-    time_t t = system_clock::to_time_t(t3);
+    //time_t t = system_clock::to_time_t(t3);
     
-    cout << time(&t) << endl;
+    //cout << time(&t) << endl;
 
       
 }   
