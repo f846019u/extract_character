@@ -12,13 +12,14 @@ using namespace std;
 using namespace cv;
 using namespace std::chrono;
 
-int main()
-{
+vector<string> get_path(vector<string> image_path);
+void system_cmd(char cmd, string path = "");
+vector<string> split(const string &s, char delim);
 
-    //path を取る
-    string path;
-    vector<string> image_path;
+vector<string> get_path(void){
+  
     glob_t globbuf;
+    vector<string> image_path;
     
     int ret = glob("/home/higaki/china_data/original/*.bmp", 0, NULL, &globbuf);
     
@@ -26,33 +27,73 @@ int main()
       image_path.push_back(globbuf.gl_pathv[i]);
       //cout << image_path[i] << endl;
     }
-    
-    path = image_path[1];
-    cout << "path =  " << path << endl;
-    path = "data/0000_SN1_02.0_p.bmp";
-    
 
-    //shell cmd
+    return image_path;
+}
+
+void system_cmd(int flag, string path){
+    
     string cmd_cp;
     const char* cmd;
-    cmd_cp = "cp " + image_path[0] + " ./data/";
-    cout << cmd_cp << endl;
-    cmd = cmd_cp.c_str();
     
-    system(cmd);
+    if(flag == 0){
+      cmd_cp = "cp " + path + " ./";
+      cout << cmd_cp << endl;
+      cmd = cmd_cp.c_str();
+      system(cmd);
+    }
     
-    
-    cmd_cp = "rm ./data/*.bmp";
-    cout << cmd_cp << endl;
-    cmd = cmd_cp.c_str();
+    else if(flag == 1){
+      cmd_cp = "rm ./*.bmp";
+      cout << cmd_cp << endl;
+      cmd = cmd_cp.c_str();
+      system(cmd);
+    }
 
-    system(cmd);
+    else {
+      cout << "正しいsystem_cmdを入力してください" << endl;
+    }
+}
+
+vector<string> split(const string &s, char delim) {
+    vector<string> elems;
+    stringstream ss(s);
+    string item;
+    while (getline(ss, item, delim)) {
+    if (!item.empty()) {
+            elems.push_back(item);
+        }
+    }
+    return elems;
+}
+
+int main()
+{
+
+    //path を取る
+    string path;
+    string src_name;
+    vector<string> image_path = get_path();
+    vector<string> tmp;
     
-    SerialNumber serial(path); //要変更
+    path = image_path[0];
+    cout << "path =  " << path << endl;
+    
+//    for(int sheet = 0; sheet < image_path.size(); sheet++)
+    
+    //shell cmd 0:cp 1:rm
+    system_cmd(0, path);
+    
+    tmp = split(image_path[0], '/');
+    src_name = tmp[4];
+    cout << "src_name =  " << src_name << endl;
+    //path = "0000_SN1_02.0_p.bmp";
+
+    SerialNumber serial(src_name); //要変更
     Mat src_img = serial.GetImage();
     
     //原画像の出力
-    imwrite("src_img.png", src_img);
+    //imwrite("src_img.png", src_img);
     
     cout << "計測開始" << endl;
     system_clock::time_point t0, t1, t2, t3, t4, t5;
@@ -65,8 +106,8 @@ int main()
     t1 = system_clock::now();
     
     //エッジ画像の出力
-    imwrite("edge_img.png", edge_img);
-    imwrite("rotation_img.png", rotation_img);
+    //imwrite("edge_img.png", edge_img);
+    //imwrite("rotation_img.png", rotation_img);
 
     //シリアルナンバー領域の抽出
     Mat extract_img;
@@ -81,10 +122,12 @@ int main()
     t3 = system_clock::now();
     
     //切り出し画像の出力
-    imwrite("segmentation_img.png", segmentation_img);
+    imwrite("./Segmentation/seg_" + src_name , segmentation_img);
 
     //シリアルナンバーの推論
  
+    //shell cmd 0:cp 1:rm
+    system_cmd(1, path);
     
     
     t4 = system_clock::now();

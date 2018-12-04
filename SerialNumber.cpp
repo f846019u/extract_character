@@ -115,9 +115,9 @@ void SerialNumber::RegionSegmentation(Mat& src_img, Mat& dst_img, int char_min_s
     hconcat(bin_img_1, bin_img_2, bin_img);
 
 
-    imwrite("src_img_1.png", src_img_1);
-    imwrite("bin_img_1.png", bin_img_1);
-    imwrite("bin_img_2.png", bin_img_2);
+    //imwrite("src_img_1.png", src_img_1);
+    //imwrite("bin_img_1.png", bin_img_1);
+    //imwrite("bin_img_2.png", bin_img_2);
     
     //2.ラベリングでノイズ除去
     Mat label_img, stats, centroids;
